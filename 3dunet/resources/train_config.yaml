@@ -71,13 +71,13 @@ loaders:
   label_internal_path: label
   # paths to the training datasets
   train_path:
-    - 'C:\Users\NG\Desktop\Projekty\3dunet\dane_abdominal\Innomed\Obrysowane_czesc_1\kostka11_4_maski_h5\kostka11_aorta_dwunastnica_trzustka_watroba.h5'
-    - 'C:\Users\NG\Desktop\Projekty\3dunet\dane_abdominal\Innomed\Obrysowane_czesc_1\kostka12_4_maski_h5\kostka12_aorta_dwunastnica_trzustka_watroba.h5'
-    - 'C:\Users\NG\Desktop\Projekty\3dunet\dane_abdominal\Innomed\Obrysowane_czesc_1\kostka13_4_maski_h5\kostka13_aorta_dwunastnica_trzustka_watroba.h5'
-    # paths to the validation datasets
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba1.h5'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba2.h5'
+     # paths to the validation datasets
   val_path:
-    - 'C:\Users\NG\Desktop\Projekty\3dunet\dane_abdominal\Innomed\Obrysowane_czesc_1\kostka11_4_maski_h5\kostka11_aorta_dwunastnica_trzustka_watroba.h5'
-  # how many subprocesses to use for data loading
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba3.h5'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba4.h5'
+   # how many subprocesses to use for data loading
   num_workers: 8
   # data transformations/augmentations
   transformer: 

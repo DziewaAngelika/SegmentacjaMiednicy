@@ -33,7 +33,8 @@ datasets:
   num_workers: 0
   # paths to the datasets
   test_path:
-    - 'C:\Users\NG\Desktop\Projekty\3dunet\dane_abdominal\Innomed\Obrysowane_czesc_1\kostka11_4_maski_h5\kostka11_aorta_dwunastnica_trzustka_watroba.h5'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba5.h5'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba6.h5'
     # - resources/Normal001.h5
   transformer:
     test:

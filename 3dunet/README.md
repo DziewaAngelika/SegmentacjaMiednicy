@@ -1,3 +1,7 @@
+##Run
+python train.py --config resources/train_config.yaml
+python predict.py --config resources/test_config.yaml
+
 [![DOI](https://zenodo.org/badge/149826542.svg)](https://zenodo.org/badge/latestdoi/149826542)
 
 # pytorch-3dunet
