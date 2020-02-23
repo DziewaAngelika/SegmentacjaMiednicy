@@ -171,6 +171,7 @@ class UNet3DTrainer:
             if self.num_iterations % self.validate_after_iters == 0:
                 # evaluate on validation set
                 eval_score = self.validate(self.loaders['val'])
+                
                 # adjust learning rate if necessary
                 if isinstance(self.scheduler, ReduceLROnPlateau):
                     self.scheduler.step(eval_score)

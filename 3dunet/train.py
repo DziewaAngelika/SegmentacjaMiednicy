@@ -12,7 +12,7 @@ from unet3d.model import get_model
 from unet3d.trainer import UNet3DTrainer
 from unet3d.utils import get_logger
 from unet3d.utils import get_number_of_learnable_parameters
-
+from funkcje_python.cross_walidation import CrossValidation
 
 def _create_trainer(config, model, optimizer, lr_scheduler, loss_criterion, eval_criterion, loaders, logger):
     assert 'trainer' in config, 'Could not find trainer configuration'
@@ -42,9 +42,10 @@ def _create_trainer(config, model, optimizer, lr_scheduler, loss_criterion, eval
         return UNet3DTrainer(model, optimizer, lr_scheduler, loss_criterion, eval_criterion,
                              config['device'], loaders, trainer_config['checkpoint_dir'],
                              max_num_epochs=trainer_config['epochs'],
-                             max_num_iterations=trainer_config['iters'],
+                             max_num_iterations=trainer_config['iters'], 
                              validate_after_iters=trainer_config['validate_after_iters'],
                              log_after_iters=trainer_config['log_after_iters'],
+                             validate_iters=trainer_config['validate_iters'],
                              eval_score_higher_is_better=trainer_config['eval_score_higher_is_better'],
                              logger=logger)
 
@@ -100,6 +101,14 @@ def main():
     loss_criterion = get_loss_criterion(config)
     # Create evaluation metric
     eval_criterion = get_evaluation_metric(config)
+
+    # Cross validation
+    path_to_folder = config['loaders']['all_data_path'][0]
+    cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
+    train_set = cross_walidation.train_filepaths
+    val_set = cross_walidation.validation_filepaths
+    config['loaders']['train_path'] = train_set
+    config['loaders']['val_path'] = val_set
 
     # Create data loaders
     loaders = get_train_loaders(config)

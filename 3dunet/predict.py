@@ -8,6 +8,7 @@ from datasets.hdf5 import get_test_loaders
 from unet3d import utils
 from unet3d.config import load_config
 from unet3d.model import get_model
+from funkcje_python.cross_walidation import CrossValidation
 
 logger = utils.get_logger('UNet3DPredictor')
 
@@ -261,6 +262,12 @@ def main():
     utils.load_checkpoint(model_path, model)
     logger.info(f"Sending the model to '{config['device']}'")
     model = model.to(config['device'])
+
+    # Cross validation
+    path_to_folder = config['datasets']['all_data_path'][0]
+    cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
+    test_set = cross_walidation.test_filepaths
+    config['datasets']['train_path'] = test_set
 
     logger.info('Loading HDF5 datasets...')
     store_predictions_in_memory = config.get('store_predictions_in_memory', True)

@@ -7,7 +7,7 @@ model:
   # number of input channels to the model
   in_channels: 1
   # number of output channels
-  out_channels: 4
+  out_channels: 1
   # determines the order of operators in a single layer (crg - Conv3d+ReLU+GroupNorm)
   layer_order: crg
   # feature maps scale factor
@@ -22,6 +22,8 @@ trainer:
   checkpoint_dir: 3dunet
   # path to latest checkpoint; if provided the training will be resumed from that checkpoint
   resume: null
+  # validation iters
+  validate_iters: 
   # how many iterations between validations
   validate_after_iters: 20
   # how many iterations between tensorboard logging
@@ -77,6 +79,8 @@ loaders:
   val_path:
     - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba3.h5'
     - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba4.h5'
+  all_data_path:
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\'
    # how many subprocesses to use for data loading
   num_workers: 8
   # data transformations/augmentations
