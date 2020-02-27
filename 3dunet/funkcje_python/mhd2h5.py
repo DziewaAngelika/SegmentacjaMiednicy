@@ -22,41 +22,30 @@ def load_itk(filename):
     return ct_scan, origin, spacing
 
 def main():
-    pathToMaskFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Silver07\\training\\'
-    pathToOriginalsFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Silver07\\after_conversion_raw\\'
-    outputPathToFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Silver07\\after_conversion_all\\'
+    pathToFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Dane\\Silver07\\training\\'
+    outputPathToFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Dane\\Silver07\\converted_h5\\'
     mhd_extension='.mhd'
-    dcm_extension='.dcm'
     final_extension='.h5'
     numbers=['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
     '011', '012', '013', '014', '015', '016', '017', '018', '019', '020']
 
     for number in enumerate(numbers):
-        fileName = 'liver-orig' + number[1]
-        print('Konwersja pliku:' + fileName)
-        pathToMaskFile = pathToMaskFolder + fileName + mhd_extension
-        pathToOriginalFile = pathToOriginalsFolder + fileName + "_raw" + dcm_extension
-        savePath = outputPathToFolder + fileName+final_extension
-
+        originFileName = 'liver-orig' + number[1]
+        maskFileName = 'liver-seg' + number[1]
+        print('Konwersja pliku:' + number[1])
+        pathToOrginalFile = pathToFolder + originFileName + mhd_extension
+        pathToMaskFile = pathToFolder + maskFileName + mhd_extension
+        savePath = outputPathToFolder + number[1] + final_extension
         
         labels_array = load_itk(pathToMaskFile)
         labels = labels_array[0]
-        raw_array = load_itk(pathToOriginalFile)
+        raw_array = load_itk(pathToOrginalFile)
         raw = raw_array[0]
-
+        
         hf = h5py.File(savePath,'w')
         hf.create_dataset('raw', data=raw, compression="gzip", compression_opts=2)
         hf.create_dataset('label', data=labels, compression="gzip", compression_opts=2)
         hf.close()
-
-
-        # raw_array = load_itk(pathToMaskFile)
-        # raw = raw_array[0]
-        # labels = np.ones(raw.shape)
-        # hf = h5py.File(savePath,'w')
-        # hf.create_dataset('raw', data=raw, compression="gzip", compression_opts=2)
-        # hf.create_dataset('label', data=labels, compression="gzip", compression_opts=2)
-        # hf.close()
 
     print("Konwersja wszystkich plikow zakonczona")
 

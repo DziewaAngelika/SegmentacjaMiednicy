@@ -21,6 +21,7 @@ trainer:
   # path to the checkpoint directory
   checkpoint_dir: 3dunet
   # path to latest checkpoint; if provided the training will be resumed from that checkpoint
+  # resume: 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Kod\3dunet\3dunet\last_checkpoint.pytorch'
   resume: null
   # validation iters
   validate_iters: 
@@ -31,7 +32,7 @@ trainer:
   # max number of epochs
   epochs: 20
   # max number of iterations
-  iters: 3000
+  iters: 50000
   # model with higher eval score is considered better
   eval_score_higher_is_better: True
 # optimizer configuration
@@ -80,7 +81,7 @@ loaders:
     - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba3.h5'
     - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba4.h5'
   all_data_path:
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\Silver07\converted_h5\'
    # how many subprocesses to use for data loading
   num_workers: 8
   # data transformations/augmentations

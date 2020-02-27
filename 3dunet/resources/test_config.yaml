@@ -37,7 +37,7 @@ datasets:
     - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba6.h5'
     # - resources/Normal001.h5
   all_data_path:
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\'
+    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\Silver07\converted_h5\'
   transformer:
     test:
       raw:
