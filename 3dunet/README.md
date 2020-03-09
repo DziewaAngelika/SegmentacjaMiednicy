@@ -1,6 +1,7 @@
 ##Run
 python train.py --config resources/train_config.yaml
 python predict.py --config resources/test_config.yaml
+tensorboard --logdir ./3dunet/logs/ --port 8666
 
 [![DOI](https://zenodo.org/badge/149826542.svg)](https://zenodo.org/badge/latestdoi/149826542)
 

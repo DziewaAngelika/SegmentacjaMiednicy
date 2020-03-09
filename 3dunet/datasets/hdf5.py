@@ -9,6 +9,9 @@ from torch.utils.data import Dataset, DataLoader, ConcatDataset
 import augment.transforms as transforms
 from unet3d.utils import get_logger
 
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 
 class SliceBuilder:
     def __init__(self, raw_datasets, label_datasets, weight_dataset, patch_shape, stride_shape):
@@ -172,7 +175,13 @@ class HDF5Dataset(Dataset):
 
             # build slice indices for raw and label data sets
             slice_builder = slice_builder_cls(self.raws, self.labels, self.weight_maps, patch_shape, stride_shape)
+
+            # for x in range(61,183):
+            #     plt.show(plt.imshow(self.labels[0][x+1,:,:]))
+            #     plt.show(plt.imshow(self.raws[0][x+1,:,:]))
+
             self.raw_slices = slice_builder.raw_slices
+
             self.label_slices = slice_builder.label_slices
             self.weight_slices = slice_builder.weight_slices
 

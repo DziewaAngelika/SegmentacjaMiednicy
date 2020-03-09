@@ -33,6 +33,8 @@ class RandomFlip:
                     channels = [np.flip(m[c], axis) for c in range(m.shape[0])]
                     m = np.stack(channels, axis=0)
 
+        # save_as_h5('RandomFlip', m)
+
         return m
 
 
@@ -60,6 +62,8 @@ class RandomRotate90:
         else:
             channels = [np.rot90(m[c], k, (1, 2)) for c in range(m.shape[0])]
             m = np.stack(channels, axis=0)
+
+        # save_as_h5('RandomRotate90', m)
 
         return m
 
@@ -93,6 +97,7 @@ class RandomRotate:
                         in range(m.shape[0])]
             m = np.stack(channels, axis=0)
 
+        # save_as_h5('RandomRotate', m)
         return m
 
 
@@ -160,27 +165,10 @@ class ElasticDeformation:
                 channels = [map_coordinates(m[c,:,:,:], indices, order=self.spline_order, mode='reflect') for c in range(m.shape[0])]
                 m = np.stack(channels, axis=0)
 
-                # hf = h5py.File("C:\\Users\\mati\\Documents\\pytorch-3dunet-master\\dane_abdominal\\Innomed\\kostka02_deformation.h5",'w')
-                # hf.create_dataset('label', data=m, compression="gzip", compression_opts=5)
-                # hf.close()
+                # save_as_h5('ElasticDeformation', m)
                 
         return m
-
-    # def __call__(self, m):
-    #     if self.random_state.uniform() < self.execution_probability:
-    #         assert m.ndim == 3
-    #         dz = gaussian_filter(self.random_state.randn(*m.shape), self.sigma, mode="constant", cval=0) * self.alpha
-    #         dy = gaussian_filter(self.random_state.randn(*m.shape), self.sigma, mode="constant", cval=0) * self.alpha
-    #         dx = gaussian_filter(self.random_state.randn(*m.shape), self.sigma, mode="constant", cval=0) * self.alpha
-
-    #         z_dim, y_dim, x_dim = m.shape
-    #         z, y, x = np.meshgrid(np.arange(z_dim), np.arange(y_dim), np.arange(x_dim), indexing='ij')
-    #         indices = z + dz, y + dy, x + dx
-    #         return map_coordinates(m, indices, order=self.spline_order, mode='reflect')
-
-    #     return m    
-
-
+  
 def blur_boundary(boundary, sigma):
     boundary = gaussian(boundary, sigma=sigma)
     boundary[boundary >= 0.5] = 1
@@ -479,3 +467,12 @@ def _recover_ignore_index(input, orig, ignore_index):
         input[mask] = ignore_index
 
     return input
+
+
+def save_as_h5(filename, image_data):
+    path_to_file = "C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Wyniki\\tranformacje\\"+ filename +".h5"
+    print(path_to_file)
+    hf = h5py.File(path_to_file, 'w')
+    hf.create_dataset('label', data=image_data, compression="gzip", compression_opts=1)
+    hf.close()
+    return

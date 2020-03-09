@@ -93,6 +93,7 @@ def main():
     model = get_model(config)
     # put the model on GPUs
     logger.info(f"Sending the model to '{config['device']}'")
+
     model = model.to(config['device'])
     # Log the number of learnable parameters
     logger.info(f'Number of learnable params {get_number_of_learnable_parameters(model)}')

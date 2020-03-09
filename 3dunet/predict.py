@@ -267,7 +267,7 @@ def main():
     path_to_folder = config['datasets']['all_data_path'][0]
     cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
     test_set = cross_walidation.test_filepaths
-    config['datasets']['train_path'] = test_set
+    config['datasets']['test_path'] = test_set
 
     logger.info('Loading HDF5 datasets...')
     store_predictions_in_memory = config.get('store_predictions_in_memory', True)
