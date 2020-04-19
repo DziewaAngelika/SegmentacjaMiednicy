@@ -22,8 +22,8 @@ def load_itk(filename):
     return ct_scan, origin, spacing
 
 def main():
-    pathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\resize_128_dcm\\'
-    outputPathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\resize_128_h5\\'
+    pathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\resize_256_dcm\\'
+    outputPathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\resize_256_h5\\'
     dcm_extension='.dcm'
     final_extension='.h5'
     numbers=['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',
@@ -37,10 +37,11 @@ def main():
         pathToMaskFile = pathToFolder + maskFileName + dcm_extension
         savePath = outputPathToFolder + number[1] + final_extension
         
-        labels_array = load_itk(pathToMaskFile)
-        labels = labels_array[0]
         raw_array = load_itk(pathToOrginalFile)
         raw = raw_array[0]
+        labels_array = load_itk(pathToMaskFile)
+        labels = labels_array[0]
+        
         
         hf = h5py.File(savePath,'w')
         hf.create_dataset('raw', data=raw, compression="gzip", compression_opts=2)

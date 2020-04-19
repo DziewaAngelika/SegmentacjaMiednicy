@@ -10,6 +10,9 @@ def load_itk(filename):
     # Reads the image using SimpleITK
     itkimage = sitk.ReadImage(filename)
 
+    #Rescale intensity of image 
+    #itkimage = rescale_intensity(itkimage)
+
     # Convert the image to a  numpy array first and then shuffle the dimensions to get axis in the order z,y,x
     ct_scan = sitk.GetArrayFromImage(itkimage)
 
@@ -21,9 +24,16 @@ def load_itk(filename):
 
     return ct_scan, origin, spacing
 
+def rescale_intensity(image):
+    rescalFilt = sitk.RescaleIntensityImageFilter()
+    rescalFilt.SetOutputMaximum(255)
+    rescalFilt.SetOutputMinimum(0)
+    itkimage = rescalFilt.Execute(sitk.Cast(image, sitk.sitkInt16))
+    return itkimage 
+
 def main():
-    pathToFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Dane\\Silver07\\training\\'
-    outputPathToFolder = 'C:\\Users\\Sylwia\\Desktop\\SegmentacjaMiednicy\\Dane\\Silver07\\converted_h5\\'
+    pathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\training\\'
+    outputPathToFolder = 'D:\\Magisterka\\Dane\\Silver07\\po_konwersji\\'
     mhd_extension='.mhd'
     final_extension='.h5'
     numbers=['001', '002', '003', '004', '005', '006', '007', '008', '009', '010',

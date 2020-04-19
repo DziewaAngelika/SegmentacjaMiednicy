@@ -1,6 +1,6 @@
-pathToFolder = 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Silver07\training\';
-outputFolder = 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Silver07\after_conversion_raw\';
-fileName = 'liver-orig020';
+pathToFolder = 'D:\Magisterka\Dane\Silver07\training\';
+outputFolder = 'D:\Magisterka\Dane\Silver07\po_konwersji\';
+fileName = 'liver-orig001';
 extention='.raw';
 pathToFile = join([pathToFolder,fileName,extention]);
 

@@ -24,23 +24,23 @@ trainer:
   # resume: 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Kod\3dunet\3dunet\last_checkpoint.pytorch'
   resume: null
   # validation iters
-  validate_iters: 
+  validate_iters: 5576
   # how many iterations between validations
-  validate_after_iters: 20
+  validate_after_iters: 2000
   # how many iterations between tensorboard logging
-  log_after_iters: 20
+  log_after_iters: 2000
   # max number of epochs
-  epochs: 20
+  epochs: 1
   # max number of iterations
-  iters: 50000
+  iters: 100000000000
   # model with higher eval score is considered better
   eval_score_higher_is_better: True
 # optimizer configuration
 optimizer:
   # initial learning rate
-  learning_rate: 0.002
+  learning_rate: 0.001
   # weight decay
-  weight_decay: 0.0001
+  weight_decay: 0.0005
 # loss function configuration
 loss:
   # loss function to be used during training
@@ -67,21 +67,21 @@ loaders:
   # validation patch (can be bigger than train patch since there is no backprop)
   val_patch: [32, 64, 64]
   # validation stride (validation patches doesn't need to overlap)
-  val_stride: [32, 64, 64]
+  val_stride: [8, 16, 16]
   # path to the raw data within the H5
   raw_internal_path: raw
   # path to the the label data withtin the H5
   label_internal_path: label
   # paths to the training datasets
   train_path:
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba1.h5'
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba2.h5'
+    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\1.h5'
+    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\2.h5'
      # paths to the validation datasets
   val_path:
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba3.h5'
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\watroba\watroba4.h5'
+    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\1.h5'
+    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\2.h5'
   all_data_path:
-    - 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Dane\Silver07\converted_h5\'
+    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\'
    # how many subprocesses to use for data loading
   num_workers: 8
   # data transformations/augmentations

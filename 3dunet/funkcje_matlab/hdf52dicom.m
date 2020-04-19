@@ -1,4 +1,4 @@
-pathToFolder = 'D:\Magisterka\Dane\Silver07\converted_h5\';
+pathToFolder = 'D:\Magisterka\Dane\Silver07\do_konwersji\';
 pathToOutputFolder = 'D:\Magisterka\Dane\Silver07\po_konwersji\';
 all_files = dir(pathToFolder);
 
@@ -7,6 +7,8 @@ file=all_files(i);
     if(file.isdir==1)
         continue
     end
+    
+error="";
 fileName = file.name;
 pathToFile = join([pathToFolder,fileName]);
 
@@ -15,22 +17,22 @@ metadata = dicominfo('CT-MONO2-16-ankle.dcm');
 
 % label/raw - Datasets(1)/Datasets(2)
 address_data_1 = hinfo.GroupHierarchy.Datasets(1).Name;
-address_data_2 = hinfo.GroupHierarchy.Datasets(2).Name;
+% address_data_2 = hinfo.GroupHierarchy.Datasets(2).Name;
 
-filename_raw = join([fileName,'_raw.dcm']);
-raw_file = double(hdf5read(pathToFile, address_data_2));
-[raw_file,error] = resize_image(raw_file,255);
-if(isempty(error))
-    save_image_dcm(join([pathToOutputFolder,filename_raw]), raw_file, metadata);
-else
-    disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_raw,'. B³¹d: ',error]));
-end
+% filename_raw = join([fileName,'_raw.dcm']);
+% raw_file = double(hdf5read(pathToFile, address_data_2));
+% [raw_file,error] = resize_image(raw_file,128);
+% if(strcmp(error,""))
+%     save_image_dcm(join([pathToOutputFolder,filename_raw]), raw_file, metadata);
+% else
+%     disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_raw,'. B³¹d: ',error]));
+% end
 
 filename_label = join([fileName,'_label.dcm']);
 label_file = double(hdf5read(pathToFile, address_data_1));
-[label_file,error] = resize_image(label_file,1024);
-if(isempty(error))
-    save_image_dcm(join([pathToOutputFolder,filename_label]), raw_file, metadata);
+[label_file,error] = resize_image(label_file,128);
+if(strcmp(error,""))
+    save_image_dcm(join([pathToOutputFolder,filename_label]), label_file, metadata);
 else
     disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_label,'. B³¹d: ',error]));
 end

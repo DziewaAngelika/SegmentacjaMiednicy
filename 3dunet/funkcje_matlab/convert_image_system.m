@@ -182,7 +182,7 @@ function [extension] = getExtension(pathToFile)
      
 function chooseConvertMethod(file_extension,choosed_extension,fileName,pathToFolder,pathToOutputFolder,size)
 
-     if(file_extension=='h5' && choosed_extension=='dcm')
+     if(strcmp(file_extension,'h5') && strcmp(choosed_extension,'dcm'))
          h52dicom(pathToFolder,fileName,pathToOutputFolder,size);
      end    
 
@@ -192,29 +192,30 @@ pathToFile=join([pathToFolder,fileName],"");
 hinfo = hdf5info(pathToFile);
 metadata = dicominfo('CT-MONO2-16-ankle.dcm');
 
-
-
 % label/raw - Datasets(1)/Datasets(2)
 address_data_1 = hinfo.GroupHierarchy.Datasets(1).Name;
-address_data_2 = hinfo.GroupHierarchy.Datasets(2).Name;
-
-filename_raw = join([fileName,"_raw.dcm"],"");
-raw_file = double(hdf5read(pathToFile, address_data_2));
-[raw_file,error] = resize_image(raw_file,size);
-if(error=="")
-    save_image_dcm(join([pathToOutputFolder,'\',filename_raw],""), raw_file, metadata);
-    disp(join(['Konwersja pliku: ',filename_raw,' zakoñczona']));
-else
-    disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_raw,'. B³¹d: ',error]));
-end
 
 filename_label = join([fileName,"_label.dcm"],"");
 label_file = double(hdf5read(pathToFile, address_data_1));
 [label_file,error] = resize_image(label_file,size);
 if(error=="")
-    save_image_dcm(join([pathToOutputFolder,'\',filename_label],""), raw_file, metadata);
-     disp(join(['Konwersja pliku: ',filename_label,' zakoñczona']));
+    save_image_dcm(join([pathToOutputFolder,'\',filename_label],""), label_file, metadata);
+    disp(join(['Konwersja pliku: ',filename_label,' zakoñczona']));
 else
     disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_label,'. B³¹d: ',error]));
 end
+
+if(~strcmp(address_data_1,'/predictions'))
+    address_data_2 = hinfo.GroupHierarchy.Datasets(2).Name;
+    filename_raw = join([fileName,"_raw.dcm"],"");
+    raw_file = double(hdf5read(pathToFile, address_data_2));
+    [raw_file,error] = resize_image(raw_file,size);
+    if(error=="")
+        save_image_dcm(join([pathToOutputFolder,'\',filename_raw],""), raw_file, metadata);
+        disp(join(['Konwersja pliku: ',filename_raw,' zakoñczona']));
+    else
+        disp(join(['Nie mo¿na dokonaæ konwersji pliku ',filename_raw,'. B³¹d: ',error]));
+    end
+end
+
 
