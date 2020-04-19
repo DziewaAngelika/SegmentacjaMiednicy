@@ -1,6 +1,14 @@
 .idea
 .pytest_cache
 .ipynb_checkpoints
+.vscode/
+
+# Dane obrazowe
+dane/
+wyniki/
+
+# Ustawienia
+.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
