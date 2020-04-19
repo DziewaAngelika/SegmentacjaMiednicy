@@ -8,6 +8,7 @@ from datasets.hdf5 import get_test_loaders
 from unet3d import utils
 from unet3d.config import load_config
 from unet3d.model import get_model
+from datetime import datetime
 from funkcje_python.cross_walidation import CrossValidation
 
 logger = utils.get_logger('UNet3DPredictor')
@@ -234,6 +235,14 @@ def predict(model, data_loader, output_file, config):
 def _get_output_file(dataset, suffix='_predictions'):
     return f'{os.path.splitext(dataset.file_path)[0]}{suffix}.h5'
 
+def _get_output_file_path(path_to_folder, dataset):
+    file_path = os.path.splitext(dataset.file_path)[0]
+    split_text = file_path.split("\\",-1)
+    filename = split_text.pop()
+    timestamp = int(datetime.now().timestamp())
+    extension = '.h5'
+    return f'{path_to_folder}{timestamp}_prediction_{filename}{extension}'
+
 
 def _get_dataset_names(config, number_of_datasets, prefix='predictions'):
     dataset_names = config.get('dest_dataset_name')
@@ -264,25 +273,30 @@ def main():
     model = model.to(config['device'])
 
     # Cross validation
-    path_to_folder = config['datasets']['all_data_path'][0]
-    cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
-    test_set = cross_walidation.test_filepaths
-    config['datasets']['test_path'] = test_set
+    # path_to_folder = config['datasets']['all_data_path'][0]
+    # cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
+    # test_set = cross_walidation.test_filepaths
+    # config['datasets']['test_path'] = test_set
 
     logger.info('Loading HDF5 datasets...')
     store_predictions_in_memory = config.get('store_predictions_in_memory', True)
     if store_predictions_in_memory:
         logger.info('Predictions will be stored in memory. Make sure you have enough RAM for you dataset.')
 
+    # Path to save predictions
+    datasets = config['datasets']
+    save_path = datasets['save_path'].pop()
+
     for test_loader in get_test_loaders(config):
         logger.info(f"Processing '{test_loader.dataset.file_path}'...")
 
-        output_file = _get_output_file(test_loader.dataset)
+        output_file = _get_output_file_path(save_path, test_loader.dataset)
         # run the model prediction on the entire dataset and save to the 'output_file' H5
         if store_predictions_in_memory:
             predict_in_memory(model, test_loader, output_file, config)
         else:
             predict(model, test_loader, output_file, config)
+            
 
 
 if __name__ == '__main__':

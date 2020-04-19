@@ -5,13 +5,14 @@
     "version": "0.2.0",
     "configurations": [
 
+
         {
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["--config", "resources/train_config.yaml"]
+            "args": ["--config", "resources/test_config.yaml"]
         },
         {
             "name": "Python: Remote Attach",

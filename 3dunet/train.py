@@ -104,12 +104,12 @@ def main():
     eval_criterion = get_evaluation_metric(config)
 
     # Cross validation
-    path_to_folder = config['loaders']['all_data_path'][0]
-    cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
-    train_set = cross_walidation.train_filepaths
-    val_set = cross_walidation.validation_filepaths
-    config['loaders']['train_path'] = train_set
-    config['loaders']['val_path'] = val_set
+    # path_to_folder = config['loaders']['all_data_path'][0]
+    # cross_walidation = CrossValidation(path_to_folder, 1, 3, 2)
+    # train_set = cross_walidation.train_filepaths
+    # val_set = cross_walidation.validation_filepaths
+    # config['loaders']['train_path'] = train_set
+    # config['loaders']['val_path'] = val_set
 
     # Create data loaders
     loaders = get_train_loaders(config)
