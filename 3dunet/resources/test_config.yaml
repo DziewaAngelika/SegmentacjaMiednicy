@@ -33,11 +33,11 @@ datasets:
   num_workers: 0
   # paths to the datasets
   test_path:
-    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\1.h5'
-    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\2.h5'
+    - 'dane\256_h5\1.h5'
+    - 'dane\256_h5\2.h5'
     # - resources/Normal001.h5
   all_data_path:
-    - 'D:\Magisterka\Dane\3Dircadb\Converted_h5_256\'
+    - 'dane\256_h5\'
   transformer:
     test:
       raw:
