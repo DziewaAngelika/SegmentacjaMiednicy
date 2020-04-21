@@ -73,12 +73,14 @@ def _create_lr_scheduler(config, optimizer):
         return clazz(**lr_config)
 
 
-def main():
+def main(config=None, model=None):
     # Create main logger
     logger = get_logger('UNet3DTrainer')
 
     # Load and log experiment configuration
-    config = load_config()
+    if config is None:
+        config = load_config()
+    
     logger.info(config)
 
     manual_seed = config.get('manual_seed', None)
@@ -88,6 +90,7 @@ def main():
         # see https://pytorch.org/docs/stable/notes/randomness.html
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
+
 
     # Create the model
     model = get_model(config)
@@ -125,7 +128,13 @@ def main():
                               loss_criterion=loss_criterion, eval_criterion=eval_criterion, loaders=loaders,
                               logger=logger)
     # Start training
-    trainer.fit()
+    # trainer.fit()
+
+    
+    
+    dp = torch.nn.DataParallel(model)
+    del dp
+    torch.cuda.empty_cache()
 
 
 if __name__ == '__main__':

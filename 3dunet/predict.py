@@ -258,9 +258,10 @@ def _get_dataset_names(config, number_of_datasets, prefix='predictions'):
             return [f'{prefix}{i}' for i in range(number_of_datasets)]
 
 
-def main():
+def main(config=None):
     # Load configuration
-    config = load_config()
+    if config is None:
+        config = load_config()
 
     # Create the model
     model = get_model(config)

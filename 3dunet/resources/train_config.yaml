@@ -21,18 +21,18 @@ trainer:
   # path to the checkpoint directory
   checkpoint_dir: 3dunet
   # path to latest checkpoint; if provided the training will be resumed from that checkpoint
-  # resume: 'C:\Users\Sylwia\Desktop\SegmentacjaMiednicy\Kod\3dunet\3dunet\last_checkpoint.pytorch'
+  # resume: '3dunet\last_checkpoint.pytorch'
   resume: null
   # validation iters
-  validate_iters: 5576
+  validate_iters: 10
   # how many iterations between validations
-  validate_after_iters: 2000
+  validate_after_iters: 10
   # how many iterations between tensorboard logging
-  log_after_iters: 2000
+  log_after_iters: 10
   # max number of epochs
   epochs: 1
   # max number of iterations
-  iters: 100000000000
+  iters: 12
   # model with higher eval score is considered better
   eval_score_higher_is_better: True
 # optimizer configuration
