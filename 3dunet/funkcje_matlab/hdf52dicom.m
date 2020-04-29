@@ -1,5 +1,5 @@
-pathToFolder = 'D:\Magisterka\Dane\Silver07\do_konwersji\';
-pathToOutputFolder = 'D:\Magisterka\Dane\Silver07\po_konwersji\';
+pathToFolder = '..\wyniki\predictions\';
+pathToOutputFolder = '..\wyniki\dicom\';
 all_files = dir(pathToFolder);
 
 for i=1:size(all_files,1)
@@ -30,7 +30,8 @@ address_data_1 = hinfo.GroupHierarchy.Datasets(1).Name;
 
 filename_label = join([fileName,'_label.dcm']);
 label_file = double(hdf5read(pathToFile, address_data_1));
-[label_file,error] = resize_image(label_file,128);
+error = "";
+%[label_file,error] = resize_image(label_file,128);
 if(strcmp(error,""))
     save_image_dcm(join([pathToOutputFolder,filename_label]), label_file, metadata);
 else

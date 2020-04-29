@@ -10,8 +10,29 @@ from unet3d.config import load_config
 from unet3d.model import get_model
 from datetime import datetime
 from funkcje_python.cross_walidation import CrossValidation
+from pydicom import dcmread
+from pydicom.data import get_testdata_file
 
 logger = utils.get_logger('UNet3DPredictor')
+
+def save_as_dcm(data, filename, config):
+    datasets = config['datasets']
+    save_path = datasets['save_dcm_path'].pop()
+    pathToOutputFile =  save_path + filename +'.dcm'
+    random_dcm = datasets['path_to_random_dcm'].pop()
+    
+    new_matrix = data*4095
+    new_matrix= np.asarray(new_matrix, dtype='uint16')
+    new_matrix = np.reshape(new_matrix, (new_matrix.shape[1], new_matrix.shape[2], new_matrix.shape[3]))
+    new_matrix = np.rot90(new_matrix, k=3, axes=(1, 2))
+    new_matrix = np.flip(new_matrix, 2)
+    new_matrix = np.ascontiguousarray(new_matrix)
+        
+    ds = dcmread(random_dcm, force=True)
+    ds.PixelData = new_matrix
+    ds.Rows = new_matrix.shape[1]
+    ds.Columns = new_matrix.shape[2]
+    ds.save_as(pathToOutputFile)
 
 
 def predict_in_memory(model, data_loader, output_file, config):
@@ -105,6 +126,10 @@ def predict_in_memory(model, data_loader, output_file, config):
 
     # save probability maps
     prediction_datasets = _get_dataset_names(config, output_heads, prefix='predictions')
+    split_text = output_file.split("\\",-1)
+    filename = split_text.pop()
+    save_as_dcm((prediction_map / normalization_mask), filename, config)
+
     with h5py.File(output_file, 'w') as f:
         for prediction_map, normalization_mask, prediction_dataset in zip(prediction_maps, normalization_masks,
                                                                           prediction_datasets):

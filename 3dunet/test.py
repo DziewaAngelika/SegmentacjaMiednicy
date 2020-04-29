@@ -57,21 +57,36 @@ def main():
     learning_rate = np.arange(0.001,0.01,0.0005)
     counter=0
     loss_criterion = eval_criterion = loaders = optimizer = lr_scheduler = trainer = None
+    # Create logger
+    logger = get_logger('UNet3DTrainer')
+
+    # Load configs
+    train_config, test_config = load_config()
+
+    # Create the model
+    model = get_model(train_config)
+
+    model = set_model(train_config, model)
+     # Create loss criterion
+    loss_criterion = get_loss_criterion(train_config)
+    # Create evaluation metric
+    eval_criterion = get_evaluation_metric(train_config)
+    # Create data loaders
+    loaders = get_train_loaders(train_config)
+    # Create the optimizer
+    optimizer = train._create_optimizer(train_config, model)
+    # Create learning rate adjustment strategy
+    lr_scheduler = train._create_lr_scheduler(train_config, optimizer)
+    
+    # Create model trainer
+    trainer = train._create_trainer(train_config, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler,
+                                loss_criterion=loss_criterion, eval_criterion=eval_criterion, loaders=loaders,
+                                logger=logger)
+
     for x in np.nditer(learning_rate):
         x = np.round(x, 4)
         print('Learning rate:', x)
         counter+=1
-
-        # Create logger
-        logger = get_logger('UNet3DTrainer')
-
-        # Load configs
-        train_config, test_config = load_config()
-        # Create the model
-        model = get_model(train_config)
-
-        if(counter==1):
-                model = set_model(train_config, model)
 
         # # Crosswalidacja 
         # path_to_folder = 'dane\\256_h5\\'
@@ -83,27 +98,15 @@ def main():
         # train_config['loaders']['val_path'] = val_set
         # test_config['datasets']['test_path'] = test_set
 
-        # Trening
-        if counter==2:
-            path_to_resume='3dunet\\last_checkpoint.pytorch'
-            train_config['trainer']['resume'] = path_to_resume
+        # # Trening
+        # if counter==2:
+        #     path_to_resume='3dunet\\last_checkpoint.pytorch'
+        #     train_config['trainer']['resume'] = path_to_resume
 
-        # Create loss criterion
-        loss_criterion = get_loss_criterion(train_config)
-        # Create evaluation metric
-        eval_criterion = get_evaluation_metric(train_config)
-        # Create data loaders
-        loaders = get_train_loaders(train_config)
-        # Create the optimizer
-        optimizer = train._create_optimizer(train_config, model)
-        # Create learning rate adjustment strategy
-        lr_scheduler = train._create_lr_scheduler(train_config, optimizer)
-        # Create model trainer
-        trainer = train._create_trainer(train_config, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler,
-                                loss_criterion=loss_criterion, eval_criterion=eval_criterion, loaders=loaders,
-                                logger=logger)
-
-
+        # if counter>1:
+        #     train_config['trainer']['iters'] = train_config['trainer']['iters'] + 12
+            
+       
         # Start training
         print('Rozpoczynam uczenie sieci')
         trainer.fit()

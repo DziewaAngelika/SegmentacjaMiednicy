@@ -40,6 +40,10 @@ datasets:
     - 'dane\256_h5\'
   save_path:
     - 'wyniki\predictions\'
+  save_dcm_path:
+    - 'wyniki\dicom\'
+  path_to_random_dcm:
+    - 'wyniki\dicom\random.dcm'
   transformer:
     test:
       raw:

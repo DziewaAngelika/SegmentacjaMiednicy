@@ -1,10 +1,12 @@
 %%
 clc;clear all; close all;
-path_image_ekspert = 'D:\Magisterka\Dane\Silver07\converted_dcm\013.h5_label.dcm';
-path_image_predicted = 'D:\Magisterka\Dane\Silver07\po_konwersji\013_predictions.h5_label.dcm';
+path_image_ekspert = '..\wyniki\dicom\1588179836_prediction_1.h5_label.dcm';
+path_image_predicted = '..\wyniki\dicom\1588179836_prediction_1.dcm';
 
 image_ekspert_dcm = squeeze(dicomread(path_image_ekspert));
 image_predicted_dcm = squeeze(dicomread(path_image_predicted));
+
+
 
 %% 
 layer_number = size(image_ekspert_dcm,3);

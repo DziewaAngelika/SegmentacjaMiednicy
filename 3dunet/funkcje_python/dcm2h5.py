@@ -2,6 +2,7 @@ import SimpleITK as sitk
 import numpy as np
 import h5py
 import os
+from pydicom import dcmread
 '''
 This funciton reads a '.mhd' file using SimpleITK and return the image array, origin and spacing of the image.
 '''
