@@ -24,15 +24,15 @@ trainer:
   # resume: '3dunet\last_checkpoint.pytorch'
   resume: null
   # validation iters
-  validate_iters: 10
+  validate_iters: null
   # how many iterations between validations
-  validate_after_iters: 10
+  validate_after_iters: 200
   # how many iterations between tensorboard logging
-  log_after_iters: 10
+  log_after_iters: 200
   # max number of epochs
-  epochs: 1
+  epochs: 4
   # max number of iterations
-  iters: 12
+  iters: 100000
   # model with higher eval score is considered better
   eval_score_higher_is_better: True
 # optimizer configuration
@@ -75,42 +75,42 @@ loaders:
   # paths to the training datasets
   train_path:
     - 'dane\256_h5\1.h5'
-    - 'dane\256_h5\2.h5'
+    #- 'dane\256_h5\2.h5'
      # paths to the validation datasets
   val_path:
     - 'dane\256_h5\1.h5'
-    - 'dane\256_h5\2.h5'
+    #- 'dane\256_h5\2.h5'
   all_data_path:
     - 'dane\256_h5\'
    # how many subprocesses to use for data loading
   num_workers: 8
-  # data transformations/augmentations
+  # data transformations/augmentations 
   transformer: 
     train:
       raw:
         - name: Normalize
-        - name: RandomFlip
-        - name: RandomRotate90
-        - name: RandomRotate
-          # rotate only in zy only
-          axes: [[2, 1]]
-          angle_spectrum: 15
-          mode: reflect
-        - name: ElasticDeformation
-          spline_order: 3
-        - name: RandomContrast
+        # - name: RandomFlip
+        # - name: RandomRotate90
+        # - name: RandomRotate
+        #   # rotate only in zy only
+        #   axes: [[2, 1]]
+        #   angle_spectrum: 15
+        #   mode: reflect
+        # - name: ElasticDeformation
+        #   spline_order: 3
+        # - name: RandomContrast
         - name: ToTensor
           expand_dims: true
       label:
-        - name: RandomFlip
-        - name: RandomRotate90
-        - name: RandomRotate
-          # rotate only in ZY only
-          axes: [[2, 1]]
-          angle_spectrum: 15
-          mode: reflect
-        - name: ElasticDeformation
-          spline_order: 0
+        # - name: RandomFlip
+        # - name: RandomRotate90
+        # - name: RandomRotate
+        #   # rotate only in ZY only
+        #   axes: [[2, 1]]
+        #   angle_spectrum: 15
+        #   mode: reflect
+        # - name: ElasticDeformation
+        #   spline_order: 0
         - name: ToTensor
           expand_dims: true
           dtype: 'long'
@@ -123,3 +123,6 @@ loaders:
         - name: ToTensor
           expand_dims: true
           dtype: 'long'
+measures:
+  csv_path:
+    - 'wyniki\statistics\'

@@ -5,6 +5,9 @@ import numpy as np
 import torch
 from tensorboardX import SummaryWriter
 from torch.optim.lr_scheduler import ReduceLROnPlateau
+import csv
+import matplotlib.pyplot as plt
+from datetime import datetime
 
 from . import utils
 
@@ -43,7 +46,7 @@ class UNet3DTrainer:
                  validate_after_iters=100, log_after_iters=100,
                  validate_iters=None, num_iterations=1, num_epoch=0,
                  eval_score_higher_is_better=True, best_eval_score=None,
-                 logger=None):
+                 logger=None, measures_path=''):
         if logger is None:
             self.logger = utils.get_logger('UNet3DTrainer', level=logging.DEBUG)
         else:
@@ -77,8 +80,47 @@ class UNet3DTrainer:
 
         self.writer = SummaryWriter(log_dir=os.path.join(checkpoint_dir, 'logs'))
 
+        pathToFolder = measures_path
+        timestamp = int(datetime.now().timestamp())
+        filename = pathToFolder + str(timestamp) + "_measures.csv"
+        self.csv_filename=filename
+        with open(filename, 'w', encoding='utf-8') as csvfile:
+            self.fieldnames = ['epoch', 'iteration', 'eval_score', 'loss']
+            csv_writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            csv_writer.writeheader()
+
         self.num_iterations = num_iterations
         self.num_epoch = num_epoch
+
+    def save_values_to_csv(self, epoch, iterations, loss, eval_score):
+        with open(self.csv_filename, 'a', encoding='utf-8') as csvfile:
+            csv_writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
+            csv_writer.writerow({'epoch': epoch, 'iteration': iterations, 'eval_score': eval_score, 'loss': loss})
+    
+    def draw_charts(self):
+        epoch_list = []
+        iteration_list = []
+        evaluation_list = []
+        loss_list = []
+        with open(self.csv_filename, 'r', encoding='utf-8') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                epoch_list.append(float(row['epoch']))
+                iteration_list.append(float(row['iteration']))
+                evaluation_list.append(float(row['eval_score']))
+                loss_list.append(float(row['loss']))
+        
+        plt.plot(iteration_list, loss_list)
+        plt.xlabel("Number of iteration")
+        plt.ylabel("Loss")
+        plt.title("CNN: Loss vs Number of iteration")
+        plt.show()
+
+        plt.plot(iteration_list, evaluation_list)
+        plt.xlabel("Number of iteration")
+        plt.ylabel("Evaluation score")
+        plt.title("CNN: Evaluation score vs Number of iteration")
+        plt.show()
 
     @classmethod
     def from_checkpoint(cls, checkpoint_path, model, optimizer, lr_scheduler, loss_criterion, eval_criterion, loaders,
@@ -203,8 +245,10 @@ class UNet3DTrainer:
                 self._log_images(input, target, output)
 
             if self.max_num_iterations < self.num_iterations:
+
                 self.logger.info(
                     f'Maximum number of iterations {self.max_num_iterations} exceeded. Finishing training...')
+                self.draw_charts()
                 return True
 
             self.num_iterations += 1
@@ -237,6 +281,8 @@ class UNet3DTrainer:
                         break
 
                 self._log_stats('val', val_losses.avg, val_scores.avg)
+                self.save_values_to_csv(self.num_epoch,self.num_iterations, val_losses.avg, val_scores.avg)
+                
                 self.logger.info(f'Validation finished. Loss: {val_losses.avg}. Evaluation score: {val_scores.avg}')
                 return val_scores.avg
         finally:

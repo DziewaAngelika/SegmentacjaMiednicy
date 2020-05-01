@@ -47,7 +47,7 @@ def _create_trainer(config, model, optimizer, lr_scheduler, loss_criterion, eval
                              log_after_iters=trainer_config['log_after_iters'],
                              validate_iters=trainer_config['validate_iters'],
                              eval_score_higher_is_better=trainer_config['eval_score_higher_is_better'],
-                             logger=logger)
+                             logger=logger, measures_path=config['measures']['csv_path'].pop())
 
 
 def _create_optimizer(config, model):
@@ -73,13 +73,12 @@ def _create_lr_scheduler(config, optimizer):
         return clazz(**lr_config)
 
 
-def main(config=None, model=None):
+def main():
     # Create main logger
     logger = get_logger('UNet3DTrainer')
 
     # Load and log experiment configuration
-    if config is None:
-        config = load_config()
+    config = load_config()
     
     logger.info(config)
 
@@ -126,15 +125,9 @@ def main(config=None, model=None):
     # Create model trainer
     trainer = _create_trainer(config, model=model, optimizer=optimizer, lr_scheduler=lr_scheduler,
                               loss_criterion=loss_criterion, eval_criterion=eval_criterion, loaders=loaders,
-                              logger=logger)
+                              logger=logger )
     # Start training
-    # trainer.fit()
-
-    
-    
-    dp = torch.nn.DataParallel(model)
-    del dp
-    torch.cuda.empty_cache()
+    trainer.fit()
 
 
 if __name__ == '__main__':
