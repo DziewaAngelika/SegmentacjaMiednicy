@@ -46,7 +46,7 @@ class UNet3DTrainer:
                  validate_after_iters=100, log_after_iters=100,
                  validate_iters=None, num_iterations=1, num_epoch=0,
                  eval_score_higher_is_better=True, best_eval_score=None,
-                 logger=None, measures_path=''):
+                 logger=None, measures_path='', charts_path=''):
         if logger is None:
             self.logger = utils.get_logger('UNet3DTrainer', level=logging.DEBUG)
         else:
@@ -81,13 +81,15 @@ class UNet3DTrainer:
         self.writer = SummaryWriter(log_dir=os.path.join(checkpoint_dir, 'logs'))
 
         pathToFolder = measures_path
-        timestamp = int(datetime.now().timestamp())
-        filename = pathToFolder + str(timestamp) + "_measures.csv"
+        self.timestamp = int(datetime.now().timestamp())
+        filename = pathToFolder + str(self.timestamp) + "_measures.csv"
         self.csv_filename=filename
         with open(filename, 'w', encoding='utf-8') as csvfile:
             self.fieldnames = ['epoch', 'iteration', 'eval_score', 'loss']
             csv_writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
             csv_writer.writeheader()
+
+        self.charts_path = charts_path    
 
         self.num_iterations = num_iterations
         self.num_epoch = num_epoch
@@ -110,16 +112,22 @@ class UNet3DTrainer:
                 evaluation_list.append(float(row['eval_score']))
                 loss_list.append(float(row['loss']))
         
+        lossplot = self.charts_path + str(self.timestamp) + '_loss.png'
         plt.plot(iteration_list, loss_list)
         plt.xlabel("Number of iteration")
         plt.ylabel("Loss")
         plt.title("CNN: Loss vs Number of iteration")
+        plt.savefig(lossplot)
         plt.show()
 
+        plt.clf()
+
+        evalplot = self.charts_path + str(self.timestamp) + '_eval.png'
         plt.plot(iteration_list, evaluation_list)
         plt.xlabel("Number of iteration")
         plt.ylabel("Evaluation score")
         plt.title("CNN: Evaluation score vs Number of iteration")
+        plt.savefig(evalplot)
         plt.show()
 
     @classmethod
@@ -179,6 +187,8 @@ class UNet3DTrainer:
                 break
 
             self.num_epoch += 1
+        
+        self.draw_charts()
 
     def train(self, train_loader):
         """Trains the model for 1 epoch.
@@ -248,7 +258,6 @@ class UNet3DTrainer:
 
                 self.logger.info(
                     f'Maximum number of iterations {self.max_num_iterations} exceeded. Finishing training...')
-                self.draw_charts()
                 return True
 
             self.num_iterations += 1
