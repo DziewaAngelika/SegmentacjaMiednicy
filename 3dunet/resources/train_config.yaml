@@ -26,9 +26,9 @@ trainer:
   # validation iters
   validate_iters: null
   # how many iterations between validations
-  validate_after_iters: 200
+  validate_after_iters: 2000
   # how many iterations between tensorboard logging
-  log_after_iters: 200
+  log_after_iters: 2000
   # max number of epochs
   epochs: 4
   # max number of iterations
@@ -61,13 +61,13 @@ lr_scheduler:
 # data loaders configuration
 loaders:
   # train patch size given to the network (adapt to fit in your GPU mem, generally the bigger patch the better)
-  train_patch: [32, 64, 64]
+  train_patch: [16, 64, 64]
   # train stride between patches
-  train_stride: [8, 16, 16]
+  train_stride: [4, 8, 8]
   # validation patch (can be bigger than train patch since there is no backprop)
-  val_patch: [32, 64, 64]
+  val_patch: [16, 64, 64]
   # validation stride (validation patches doesn't need to overlap)
-  val_stride: [8, 16, 16]
+  val_stride: [4, 8, 8]
   # path to the raw data within the H5
   raw_internal_path: raw
   # path to the the label data withtin the H5
@@ -126,3 +126,5 @@ loaders:
 measures:
   csv_path:
     - 'wyniki\statistics\'
+  charts_path:
+    - 'wyniki\charts\'
