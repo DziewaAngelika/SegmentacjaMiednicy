@@ -105,7 +105,15 @@ class MeanIoU:
         """
         Computes IoU for a given target and prediction tensors
         """
-        return torch.sum(prediction & target).float() / torch.sum(prediction | target).float()
+        and_operation = torch.sum(prediction & target).float()
+        or_operation = torch.sum(prediction | target).float()
+        if or_operation!=0:
+            return (and_operation / or_operation)
+        elif and_operation==0: 
+            return float(1)
+        else:
+            return float(0)
+        
 
 
 class AdaptedRandError:
