@@ -17,9 +17,9 @@ logger = utils.get_logger('UNet3DPredictor')
 
 def save_as_dcm(data, filename, config):
     datasets = config['datasets']
-    save_path = datasets['save_dcm_path'].pop()
+    save_path = datasets['save_dcm_path'][0]
     pathToOutputFile =  save_path + filename +'.dcm'
-    random_dcm = datasets['path_to_random_dcm'].pop()
+    random_dcm = datasets['path_to_random_dcm'][0]
     
     new_matrix = data*4095
     new_matrix= np.asarray(new_matrix, dtype='uint16')
@@ -311,7 +311,7 @@ def main(config=None):
 
     # Path to save predictions
     datasets = config['datasets']
-    save_path = datasets['save_path'].pop()
+    save_path = datasets['save_path'][0]
 
     for test_loader in get_test_loaders(config):
         logger.info(f"Processing '{test_loader.dataset.file_path}'...")
