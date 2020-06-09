@@ -193,7 +193,7 @@ class UNet3DTrainer:
         iterator=None
         fold_length=0
         if(self.crossval):
-            iterator = iter(self.loaders)
+            iterator = iter(self.kfoldset)
             self.loaders = next(iterator)
             fold_length=math.ceil(self.max_num_epochs/self.kfolds)
 

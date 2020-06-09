@@ -33,18 +33,13 @@ datasets:
   num_workers: 0
   # paths to the datasets
   test_path:
-    # - 'D:\Magisterka\Dane\3DIrcaDB\128\h5\3.h5'
-   - 'dane\nowe\128\3_128.h5'
-  # - 'dane\nowe\128\15_128.h5'
-  # - 'dane\nowe\128\16_128.h5'
-  # - 'dane\nowe\128\17_128.h5'
-  # - 'dane\nowe\128\18_128.h5'
-  # - 'dane\nowe\128\19_128.h5'
-  # - 'dane\nowe\128\20_128.h5'
-    # - 'dane\h5\7_256.h5'
-    # - 'dane\h5\8_256.h5'
-    # - 'dane\h5\9_256.h5'
-    # - 'dane\h5\10_256.h5'
+    - 'dane\nowe\128\14_128.h5'
+    - 'dane\nowe\128\15_128.h5'
+    - 'dane\nowe\128\16_128.h5'
+    - 'dane\nowe\128\17_128.h5'
+    - 'dane\nowe\128\18_128.h5'
+    - 'dane\nowe\128\19_128.h5'
+    - 'dane\nowe\128\20_128.h5'
    #  - 'dane\256_h5\2.h5'
     # - resources/Normal001.h5
   all_data_path:
