@@ -2,9 +2,10 @@ import collections
 import importlib
 
 import h5py
+import math
 import numpy as np
 import torch
-from torch.utils.data import Dataset, DataLoader, ConcatDataset
+from torch.utils.data import Dataset, DataLoader, ConcatDataset, Subset
 
 import augment.transforms as transforms
 from unet3d.utils import get_logger
@@ -340,6 +341,117 @@ def get_train_loaders(config):
         'train': DataLoader(ConcatDataset(train_datasets), batch_size=1, shuffle=True, num_workers=num_workers),
         'val': DataLoader(ConcatDataset(val_datasets), batch_size=1, shuffle=True, num_workers=num_workers)
     }
+
+def get_train_loaders_kfold(config, kfolds):
+    """
+    Returns dictionary containing the training and validation loaders
+    (torch.utils.data.DataLoader) backed by the datasets.hdf5.HDF5Dataset.
+
+    :param config: a top level configuration object containing the 'loaders' key
+    :return: dict {
+        'train': <train_loader>
+        'val': <val_loader>
+    }
+    """
+    assert 'loaders' in config, 'Could not find data loaders configuration'
+    loaders_config = config['loaders']
+
+    logger = get_logger('HDF5Dataset')
+    logger.info('Creating training and validation set loaders...')
+
+    # get train and validation files
+    train_paths = loaders_config['all_data_path']
+    assert isinstance(train_paths, list)
+    # get h5 internal paths for raw and label
+    raw_internal_path = loaders_config['raw_internal_path']
+    label_internal_path = loaders_config['label_internal_path']
+    weight_internal_path = loaders_config.get('weight_internal_path', None)
+    # get train/validation patch size and stride
+    train_patch = tuple(loaders_config['train_patch'])
+    train_stride = tuple(loaders_config['train_stride'])
+
+    # get slice_builder_cls
+    slice_builder_str = loaders_config.get('slice_builder', 'SliceBuilder')
+    logger.info(f'Slice builder class: {slice_builder_str}')
+    slice_builder_cls = _get_slice_builder_cls(slice_builder_str)
+
+    train_datasets = []
+    for train_path in train_paths:
+        try:
+            logger.info(f'Loading training set from: {train_path}...')
+            # create H5 backed training and validation dataset with data augmentation
+            train_dataset = HDF5Dataset(train_path, train_patch, train_stride, phase='train',
+                                        transformer_config=loaders_config['transformer'],
+                                        raw_internal_path=raw_internal_path,
+                                        label_internal_path=label_internal_path,
+                                        weight_internal_path=weight_internal_path,
+                                        slice_builder_cls=slice_builder_cls)
+            train_datasets.append(train_dataset)
+        except Exception:
+            logger.info(f'Skipping training set: {train_path}', exc_info=True)
+
+    num_workers = loaders_config.get('num_workers', 1)
+    logger.info(f'Number of workers for train/val datasets: {num_workers}')
+    # when training with volumetric data use batch_size of 1 due to GPU memory constraints
+    
+    length = len(train_datasets)
+    count_in_fold=math.ceil(length/kfolds)
+
+    fold_sets=[]
+
+    val_set=[]
+    train_set=[]
+
+    counter = 0
+    fold = 0
+    for kfold in range(1,kfolds+1):
+        for dataset in train_datasets:
+            if(counter%count_in_fold==0): 
+                fold=fold+1
+            if(fold==kfold):
+                val_set.insert(len(val_set)+1,dataset)
+            else:
+                train_set.insert(len(train_set)+1,dataset)
+            counter=counter+1
+        sets={
+            'train': DataLoader(ConcatDataset(train_set), batch_size=1, shuffle=True, num_workers=num_workers),
+            'val': DataLoader(ConcatDataset(val_set), batch_size=1, shuffle=True, num_workers=num_workers)
+            }
+        fold_sets.insert(len(fold_sets)+1,sets)
+        val_set=[]
+        train_set=[]
+        counter = 0
+        fold = 0
+
+    # counter=0
+    # counter2=0
+    # data=[]
+    # numbers=[]
+    # loaders_set=[]
+    # folds=1
+    # for dataset in train_datasets:
+    #     counter=counter+1
+    #     counter2=counter2+1
+    #     data.insert(counter,dataset)
+    #     numbers.insert(counter,counter2)
+    #     if(counter==count_in_fold or counter2==length):
+    #         loaders_set.insert(folds,DataLoader(ConcatDataset(data), batch_size=1, shuffle=True, num_workers=num_workers))
+    #         counter=0
+    #         data=[]
+    #         numbers=[]
+    #         folds=folds+1
+
+    # val_set=[]    
+    # train_set=[]
+    # counter=0
+    # for d_set in loaders_set:
+    #     counter=counter+1
+    #     if(counter==kfold):
+    #         val_set.insert(len(val_set)+1,d_set)
+    #     else:
+    #         train_set.insert(len(train_set)+1,d_set)
+    
+    return fold_sets
 
 
 def get_test_loaders(config):

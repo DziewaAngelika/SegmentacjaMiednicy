@@ -2,7 +2,7 @@ import csv
 import matplotlib.pyplot as plt
 
 pathToFolder = 'wyniki\\statistics\\'
-timestamp="1588318822"
+timestamp="1591024504"
 filename = pathToFolder +timestamp+ "_measures.csv"
 
 with open(filename, 'r', encoding='utf-8') as csvfile:

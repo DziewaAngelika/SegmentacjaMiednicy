@@ -4,7 +4,7 @@ import torch
 import torch.optim as optim
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-from datasets.hdf5 import get_train_loaders
+from datasets.hdf5 import get_train_loaders, get_train_loaders_kfold
 from unet3d.config import load_config
 from unet3d.losses import get_loss_criterion
 from unet3d.metrics import get_evaluation_metric
@@ -23,13 +23,13 @@ def _create_trainer(config, model, optimizer, lr_scheduler, loss_criterion, eval
 
     if resume is not None:
         # continue training from a given checkpoint
-        return UNet3DTrainer.from_checkpoint(resume, model,
+        return UNet3DTrainer.from_checkpoint(resume, model, config,
                                              optimizer, lr_scheduler, loss_criterion,
                                              eval_criterion, loaders,
                                              logger=logger)
     elif pre_trained is not None:
         # fine-tune a given pre-trained model
-        return UNet3DTrainer.from_pretrained(pre_trained, model, optimizer, lr_scheduler, loss_criterion,
+        return UNet3DTrainer.from_pretrained(pre_trained, model, config, optimizer, lr_scheduler, loss_criterion,
                                              eval_criterion, device=config['device'], loaders=loaders,
                                              max_num_epochs=trainer_config['epochs'],
                                              max_num_iterations=trainer_config['iters'],
@@ -39,7 +39,7 @@ def _create_trainer(config, model, optimizer, lr_scheduler, loss_criterion, eval
                                              logger=logger)
     else:
         # start training from scratch
-        return UNet3DTrainer(model, optimizer, lr_scheduler, loss_criterion, eval_criterion,
+        return UNet3DTrainer(model, config, optimizer, lr_scheduler, loss_criterion, eval_criterion,
                              config['device'], loaders, trainer_config['checkpoint_dir'],
                              max_num_epochs=trainer_config['epochs'],
                              max_num_iterations=trainer_config['iters'], 
@@ -115,7 +115,12 @@ def main():
     # config['loaders']['val_path'] = val_set
 
     # Create data loaders
-    loaders = get_train_loaders(config)
+    loaders=None
+    if(config['loaders']['cross_val']):
+        kfolds= config['loaders']['kfolds']
+        loaders = get_train_loaders_kfold(config, kfolds)
+    else:
+        loaders = get_train_loaders(config)
 
     # Create the optimizer
     optimizer = _create_optimizer(config, model)

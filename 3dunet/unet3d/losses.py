@@ -3,6 +3,7 @@ import torch.nn.functional as F
 from torch import nn as nn
 from torch.autograd import Variable
 from torch.nn import MSELoss, SmoothL1Loss, L1Loss
+import numpy as np 
 
 
 def compute_per_channel_dice(input, target, epsilon=1e-5, ignore_index=None, weight=None):
@@ -32,7 +33,17 @@ def compute_per_channel_dice(input, target, epsilon=1e-5, ignore_index=None, wei
         intersect = weight * intersect
 
     denominator = (input + target).sum(-1)
+    
     return 2. * intersect / denominator.clamp(min=epsilon)
+
+    # result = input > 0.5
+    # result=result.type(torch.float32)
+    # dice = torch.div(torch.mul(torch.sum(result[target==1]),2.0), (torch.sum(result) + torch.sum(target)))
+    # #dice = np.sum(result[target==1].cpu().numpy())*2.0 / (np.sum(result.cpu().numpy()) + np.sum(target.cpu().numpy()))
+    # abc = 2. * intersect / denominator.clamp(min=epsilon)
+    # abc.data=torch.tensor([dice])
+    
+    # return abc
 
 
 class DiceLoss(nn.Module):

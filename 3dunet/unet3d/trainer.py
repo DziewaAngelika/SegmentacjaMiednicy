@@ -8,6 +8,8 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 import csv
 import matplotlib.pyplot as plt
 from datetime import datetime
+import math
+from datasets.hdf5 import get_train_loaders, get_train_loaders_kfold
 
 from . import utils
 
@@ -40,7 +42,7 @@ class UNet3DTrainer:
         num_epoch (int): useful when loading the model from the checkpoint
     """
 
-    def __init__(self, model, optimizer, lr_scheduler, loss_criterion,
+    def __init__(self, model, config, optimizer, lr_scheduler, loss_criterion,
                  eval_criterion, device, loaders, checkpoint_dir,
                  max_num_epochs=100, max_num_iterations=1e5,
                  validate_after_iters=100, log_after_iters=100,
@@ -54,6 +56,7 @@ class UNet3DTrainer:
 
         self.logger.info(model)
         self.model = model
+        self.config = config
         self.optimizer = optimizer
         self.scheduler = lr_scheduler
         self.loss_criterion = loss_criterion
@@ -67,6 +70,13 @@ class UNet3DTrainer:
         self.log_after_iters = log_after_iters
         self.validate_iters = validate_iters
         self.eval_score_higher_is_better = eval_score_higher_is_better
+        self.crossval = self.config['loaders']['cross_val']
+        self.kfolds = self.config['loaders']['kfolds']
+
+        self.kfoldset=None
+        if(self.crossval):
+            self.kfoldset = self.loaders
+
         logger.info(f'eval_score_higher_is_better: {eval_score_higher_is_better}')
 
         if best_eval_score is not None:
@@ -131,14 +141,14 @@ class UNet3DTrainer:
         plt.show()
 
     @classmethod
-    def from_checkpoint(cls, checkpoint_path, model, optimizer, lr_scheduler, loss_criterion, eval_criterion, loaders,
+    def from_checkpoint(cls, checkpoint_path, model, config, optimizer, lr_scheduler, loss_criterion, eval_criterion, loaders,
                         logger=None):
         logger.info(f"Loading checkpoint '{checkpoint_path}'...")
         state = utils.load_checkpoint(checkpoint_path, model, optimizer)
         logger.info(
             f"Checkpoint loaded. Epoch: {state['epoch']}. Best val score: {state['best_eval_score']}. Num_iterations: {state['num_iterations']}")
         checkpoint_dir = os.path.split(checkpoint_path)[0]
-        return cls(model, optimizer, lr_scheduler,
+        return cls(model,config, optimizer, lr_scheduler,
                    loss_criterion, eval_criterion,
                    torch.device(state['device']),
                    loaders, checkpoint_dir,
@@ -154,7 +164,7 @@ class UNet3DTrainer:
                    logger=logger)
 
     @classmethod
-    def from_pretrained(cls, pre_trained, model, optimizer, lr_scheduler, loss_criterion, eval_criterion,
+    def from_pretrained(cls, pre_trained, model, config, optimizer, lr_scheduler, loss_criterion, eval_criterion,
                         device, loaders,
                         max_num_epochs=100, max_num_iterations=1e5,
                         validate_after_iters=100, log_after_iters=100,
@@ -164,7 +174,7 @@ class UNet3DTrainer:
         logger.info(f"Logging pre-trained model from '{pre_trained}'...")
         utils.load_checkpoint(pre_trained, model, None)
         checkpoint_dir = os.path.split(pre_trained)[0]
-        return cls(model, optimizer, lr_scheduler,
+        return cls(model,config, optimizer, lr_scheduler,
                    loss_criterion, eval_criterion,
                    device, loaders, checkpoint_dir,
                    eval_score_higher_is_better=eval_score_higher_is_better,
@@ -179,9 +189,21 @@ class UNet3DTrainer:
                    logger=logger)
 
     def fit(self):
+        trainer_set=None
+        iterator=None
+        fold_length=0
+        if(self.crossval):
+            iterator = iter(self.loaders)
+            self.loaders = next(iterator)
+            fold_length=math.ceil(self.max_num_epochs/self.kfolds)
+
         for _ in range(self.num_epoch, self.max_num_epochs):
             # train for one epoch
+            if(self.crossval and self.num_epoch % fold_length==0):
+                self.loaders = next(iterator)
+
             should_terminate = self.train(self.loaders['train'])
+            #should_terminate = self.train(trainer_set)
 
             if should_terminate:
                 break
@@ -314,6 +336,8 @@ class UNet3DTrainer:
         return input, target, weight
 
     def _forward_pass(self, input, target, weight=None):
+        target = target.type(torch.float32)
+        
         # forward pass
         output = self.model(input)
 
