@@ -21,7 +21,7 @@ trainer:
   # path to the checkpoint directory
   checkpoint_dir: 3dunet
   # path to latest checkpoint; if provided the training will be resumed from that checkpoint
-  # resume: '3dunet\last_checkpoint.pytorch'
+  #resume: '3dunet\last_checkpoint.pytorch'
   resume: null
   # validation iters
   validate_iters: null

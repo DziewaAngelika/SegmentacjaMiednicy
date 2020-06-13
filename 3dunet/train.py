@@ -56,7 +56,7 @@ def _create_optimizer(config, model):
     optimizer_config = config['optimizer']
     learning_rate = optimizer_config['learning_rate']
     weight_decay = optimizer_config['weight_decay']
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+    optimizer = optim.SGD(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
     return optimizer
 
 

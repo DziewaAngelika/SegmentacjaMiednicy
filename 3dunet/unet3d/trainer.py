@@ -192,18 +192,18 @@ class UNet3DTrainer:
         trainer_set=None
         iterator=None
         fold_length=0
+        
         if(self.crossval):
-            iterator = iter(self.kfoldset)
-            self.loaders = next(iterator)
             fold_length=math.ceil(self.max_num_epochs/self.kfolds)
 
         for _ in range(self.num_epoch, self.max_num_epochs):
             # train for one epoch
-            if(self.crossval and self.num_epoch % fold_length==0):
-                self.loaders = next(iterator)
+            if(self.crossval):
+                fold_number=math.floor(self.num_epoch/fold_length)
+                if fold_number<=len(self.kfoldset):
+                    self.loaders = self.kfoldset[fold_number]
 
             should_terminate = self.train(self.loaders['train'])
-            #should_terminate = self.train(trainer_set)
 
             if should_terminate:
                 break
