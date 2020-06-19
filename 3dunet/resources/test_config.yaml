@@ -33,13 +33,13 @@ datasets:
   num_workers: 0
   # paths to the datasets
   test_path:
-    - 'dane\nowe\128\14_128.h5'
-    - 'dane\nowe\128\15_128.h5'
-    - 'dane\nowe\128\16_128.h5'
-    - 'dane\nowe\128\17_128.h5'
-    - 'dane\nowe\128\18_128.h5'
-    - 'dane\nowe\128\19_128.h5'
-    - 'dane\nowe\128\20_128.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_16_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_17_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_18_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_19_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_20_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_21_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_22_1_t1.h5'
    #  - 'dane\256_h5\2.h5'
     # - resources/Normal001.h5
   all_data_path:

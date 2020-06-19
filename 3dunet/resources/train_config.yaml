@@ -23,6 +23,8 @@ trainer:
   # path to latest checkpoint; if provided the training will be resumed from that checkpoint
   #resume: '3dunet\last_checkpoint.pytorch'
   resume: null
+  # path to pre-trained model
+  pre_trained: '3dunet\last_checkpoint.pytorch'
   # validation iters
   validate_iters: null
   # how many iterations between validations
@@ -74,37 +76,41 @@ loaders:
   label_internal_path: label
   # paths to the training datasets
   train_path:
-    - 'dane\nowe\128\1_128.h5'
-    - 'dane\nowe\128\2_128.h5'
-    - 'dane\nowe\128\3_128.h5'
-    - 'dane\nowe\128\4_128.h5'
-    - 'dane\nowe\128\5_128.h5'
-    - 'dane\nowe\128\6_128.h5'
-    - 'dane\nowe\128\7_128.h5'
-    - 'dane\nowe\128\8_128.h5'
-    - 'dane\nowe\128\9_128.h5'
-    - 'dane\nowe\128\10_128.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_0_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_2_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_3_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_4_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_5_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_6_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_7_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_8_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_9_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_10_1_t1.h5'
     #- 'dane\256_h5\2.h5'
      # paths to the validation datasets
   val_path:
-    - 'dane\nowe\128\11_128.h5'
-    - 'dane\nowe\128\12_128.h5'
-    - 'dane\nowe\128\13_128.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_11_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_12_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_13_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_14_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_15_1_t1.h5'
     #- 'dane\256_h5\2.h5'
   all_data_path:
-    - 'dane\nowe\128\1_128.h5'
-    - 'dane\nowe\128\2_128.h5'
-    - 'dane\nowe\128\3_128.h5'
-    - 'dane\nowe\128\4_128.h5'
-    - 'dane\nowe\128\5_128.h5'
-    - 'dane\nowe\128\6_128.h5'
-    - 'dane\nowe\128\7_128.h5'
-    - 'dane\nowe\128\8_128.h5'
-    - 'dane\nowe\128\9_128.h5'
-    - 'dane\nowe\128\10_128.h5'
-    - 'dane\nowe\128\11_128.h5'
-    - 'dane\nowe\128\12_128.h5'
-    - 'dane\nowe\128\13_128.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_0_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_2_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_3_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_4_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_5_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_6_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_7_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_8_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_9_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_10_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_11_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_12_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_13_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_14_1_t1.h5'
+    - 'dane\bratz\converted_t1\BraTS19_2013_15_1_t1.h5'
   kfolds: 5
   cross_val: true
    # how many subprocesses to use for data loading
